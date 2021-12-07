@@ -140,13 +140,148 @@ def create_feature_data(movielens_spark):
     
     return feature_data
 
+#Generate necessary sub-spark dfs
+def split_spark(data_full_spark):
+    
+    train_df_spark, test_df_spark = spark_random_split(data_full_spark.select(COL_USER, COL_ITEM, COL_RATING),\
+                                                       ratio=0.75, seed=123)
+    users = train_df_spark.select(COL_USER).distinct()
+    items = train_df_spark.select(COL_ITEM).distinct()
+    user_item = users.crossJoin(items)
+    
+    return train_df_spark, test_df_spark, user_item
+
 
 
 #get top k dataframe
-def create_topk_reco():
-    pass
+def create_topk_topall(pred_df_spark, train_df_spark, top_k = 10):
+    
+    # Remove seen items - Remember we only used training data to create user_item
+    pred_exclude_train = pred_df_spark.alias("pred").join(
+        train_df_spark.alias("train"),
+        (pred_df_spark[COL_USER] == train_df_spark[COL_USER]) & (pred_df_spark[COL_ITEM] == train_df_spark[COL_ITEM]),
+        how='outer'
+    )
 
+    top_all = pred_exclude_train.filter(pred_exclude_train["train.Rating"].isNull()) \
+        .select('pred.' + COL_USER, 'pred.' + COL_ITEM, 'pred.' + "prediction")
+
+    window = Window.partitionBy(COL_USER).orderBy(F.col("prediction").desc())
+    top_k_reco = top_all.select("*", F.row_number().over(window).alias("rank")).filter(F.col("rank") <= top_k).drop("rank")
+ 
+    return top_k_reco, top_all
+
+#metrics helpers
+def get_ranking_results(ranking_eval):
+    metrics = {
+        "Precision@k": ranking_eval.precision_at_k(),
+        "Recall@k": ranking_eval.recall_at_k(),
+        "NDCG@k": ranking_eval.ndcg_at_k(),
+        "Mean average precision": ranking_eval.map_at_k()
+      
+    }
+    return metrics  
+
+def get_diversity_results(diversity_eval):
+    metrics = {
+        "catalog_coverage":diversity_eval.catalog_coverage(),
+        "distributional_coverage":diversity_eval.distributional_coverage(), 
+        "novelty": diversity_eval.novelty(), 
+        "diversity": diversity_eval.diversity(), 
+        "serendipity": diversity_eval.serendipity()
+    }
+    return metrics
+
+def get_rating_results(rating_eval):
+    metrics = {
+     'rmse': rating_eval.rmse(),
+     'mean absolute error' : rating_eval.mae(),
+     'R squared': rating_eval.rsquared(),
+     'explained variance': rating_eval.exp_var()
+    }
+    return metrics
 
 #get metrics
-def get_metrics():
-    pass
+def get_metrics(train_df_spark, test_df_spark, top_k_reco, top_all, feature_data, top_k = 10):
+    
+    collaborative_diversity_eval = SparkDiversityEvaluation(
+        train_df = train_df_spark, 
+        reco_df = top_k_reco,
+        col_user = COL_USER, 
+        col_item = COL_ITEM
+    )
+    diversity_collaborative = get_diversity_results(collaborative_diversity_eval)
+    
+    content_diversity_eval = SparkDiversityEvaluation(
+        train_df = train_df_spark, 
+        reco_df = top_k_reco,
+        item_feature_df = feature_data, 
+        item_sim_measure="item_feature_vector",
+        col_user = COL_USER, 
+        col_item = COL_ITEM
+    )
+    diversity_content = get_diversity_results(content_diversity_eval)
+    
+    ranking_eval = SparkRankingEvaluation(
+        test_df_spark, 
+        top_all, 
+        k = top_k, 
+        col_user="UserId", 
+        col_item="MovieId",
+        col_rating="Rating", 
+        col_prediction="prediction",
+        relevancy_method="top_k"
+    )
+    ranking = get_ranking_results(ranking_eval)
+    
+    rating_eval = SparkRatingEvaluation(
+        test_df_spark, 
+        top_all,  
+        col_user="UserId", 
+        col_item="MovieId",
+        col_rating="Rating", 
+        col_prediction="prediction")
+    rating = get_rating_results(rating_eval)
+    
+    return diversity_collaborative, diversity_content, ranking, rating
+    
+    
+
+#metric vars
+display_columns = ["Metric", "Score","Range", "Criteria"]
+
+diversity_metrics = ["Collaborative Diversity", "Collaborative Serendipity", "Collaborative Novelty", "Content Diversity",\
+          "Content Serendipity", "Content Novelty"]
+rating_metrics = ["RMSE", "MAE", "R Squared"]
+ranking_metrics = ["Precision@k", "Recall@k"]
+metrics = diversity_metrics + rating_metrics + ranking_metrics
+metric_range = ["[0,1]", "[0,1]", ">=0", "[0,1]", "[0,1]", ">=0", ">0", ">=0", "<=1", "[0,1]", "[0,1]" ]
+criteria = ["The closer to 1 the better", "The closer to 1 the better", "Inverse popularity. The higher the better", "The closer to 1 the better", "The closer to 1 the better", "Inverse popularity. The higher the better", "The smaller the better", "The smaller the better", "The closer to 1 the better", "The closer to 1 the better. Grows with k", "The closer to 1 the better. Grows with k" ]
+
+
+
+#display metrics
+def display_metrics(diversity_collaborative, diversity_content, ranking, rating, metrics = metrics, metric_range = metric_range,\
+                    criteria = criteria):
+    
+    scores = []
+    scores.append(diversity_collaborative["diversity"])
+    scores.append(diversity_collaborative["serendipity"])
+    scores.append(diversity_collaborative["novelty"])
+    scores.append(diversity_content["diversity"])
+    scores.append(diversity_content["serendipity"])
+    scores.append(diversity_content["novelty"])
+    scores.append(rating["rmse"])
+    scores.append(rating["mean absolute error"])
+    scores.append(rating["R squared"])
+    scores.append(ranking["Precision@k"])
+    scores.append(ranking["Recall@k"])
+    
+    metric_df = pd.DataFrame()
+    metric_df["Metric"] = metrics
+    metric_df["Score"] = scores
+    metric_df["Range"] = metric_range
+    metric_df["Criteria"] = criteria
+    
+    return metric_df
+    
