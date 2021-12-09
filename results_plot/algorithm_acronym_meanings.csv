@@ -1,0 +1,8 @@
+Acronym,Meaning
+SAR,Simple Algorithm for Recommendation (SAR) algorithm using a Python single-node implementation.
+Light GCN,"Simple, linear and neat Graph Convolution Network (GCN) model for recommendation"
+NCF,Neural Collaborative Filtering (NCF)
+WD,Wide-and-deep (WD) learning jointly trains wide linear model and deep neural networks
+SVD,Singular Value Decomposition (SVD) using the Surprise library
+ALS,Alternating Least Squares (ALS) matrix factorization
+RBM,"Restricted Boltzmann Machine (RBM), a generative neural network"
