@@ -1,0 +1,12 @@
+Metric,Score,Range,Criteria
+Collaborative Diversity,0.6749402994297401,"[0,1]",The closer to 1 the better
+Collaborative Serendipity,0.7328970227574041,"[0,1]",The closer to 1 the better
+Collaborative Novelty,8.842216704337064,>=0,Inverse popularity. The higher the better
+Content Diversity,0.8458804967436666,"[0,1]",The closer to 1 the better
+Content Serendipity,0.8622064941895039,"[0,1]",The closer to 1 the better
+Content Novelty,8.842216704337064,>=0,Inverse popularity. The higher the better
+RMSE,3.1574043880219818,>0,The smaller the better
+MAE,2.960487797103407,>=0,The smaller the better
+R Squared,-6.935765881360093,<=1,The closer to 1 the better
+Precision@k,0.32895855472901175,"[0,1]",The closer to 1 the better. Grows with k
+Recall@k,0.3416996957129911,"[0,1]",The closer to 1 the better. Grows with k
