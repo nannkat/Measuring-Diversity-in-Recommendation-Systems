@@ -1,5 +1,5 @@
 # EC601_RSDiverisificationProject
-In this project we focus on building a tool that evaluates the performance of some existing Recommendation Algorithms. Instead of focusing on accuracy, we turn our focus on a less common but much needed metric, diversity. Using the summary and tools given in the [Microsoft Recommenders Library](https://github.com/microsoft/recommenders) [[1]](#1) we inspect how diverse recommendations by different algorithms are.
+In this project we focus on building a tool that evaluates the performance of some existing Recommendation Algorithms. Instead of focusing on accuracy, we turn our focus on a less common but much needed metric, diversity. Using the summary and tools found the open source [Microsoft Recommenders](https://github.com/microsoft/recommenders) library. we inspect how diverse recommendations by different algorithms are.
 
 ## Table of Contents
 
@@ -25,7 +25,7 @@ The topic of diversity in recommendation systems, just like the topic of recomme
 
 ## Methods/Tools
 
-- Microsoft Recommenders
+- Microsoft Recommenders [[1]](#1)
 - Jupyter Notebook
 - Apache Spark
 - Tensorflow
@@ -53,7 +53,7 @@ TBD
 
 ## References
 <a name="1"></a>
-[[1]]Microsoft (2021) Recomennders [Source code]. https://github.com/microsoft/recommenders.
+[[1]](https://github.com/microsoft/recommenders) Microsoft (2021) Recommenders [Source code]. https://github.com/microsoft/recommenders.<br>
 <a name="2"></a>
 [[2]](https://link.springer.com/article/10.1007%2Fs00521-019-04128-6) Logesh, R., Subramaniyaswamy, V., Vijayakumar, V. et al., "Hybrid bio-inspired user clustering for the generation of diversified recommendations", <i>Neural Comput & Applic</i>, vol.32, pp. 2487–2506, April 2020. [Online]. Available: https://doi.org/10.1007/s00521-019-04128-6 [Accessed 14.09.2021].<br>
 <a name="3"></a>
