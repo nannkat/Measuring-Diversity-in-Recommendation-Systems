@@ -2,7 +2,16 @@
 In this project we focus on building a tool that evaluates the performance of some existing Recommendation Algorithms. Instead of focusing on accuracy, we turn our focus on a less common but much needed metric, diversity. Using the summary and tools found the open source [Microsoft Recommenders](https://github.com/microsoft/recommenders) library. we inspect how diverse recommendations by different algorithms are.
 
 ## Table of Contents
+1. [Background](#Background)<br>
+2. [Project Goals](#Projectgoals) <br>
+3. [Methods/Tools](#Methods) <br>
+4. [The Metrics](#Metrics) <br>
+5. [Challenges](#Challenges)<br>
+6. [Results](#Results)<br>
+7. [Conclusion](#Conclusion)<br>
+8. [Setup/How to run](#Setup)<br>
 
+<a name="Background"></a>
 ## Background
 In the modern world we are surrounded by recommendation systems of various kinds. The most common drive behind the develeopement and research of these systems is to aim for more user satisfaction by improving accuracy of the recommendations [[2]](#2). That is, improving how well they fit together with the users pre-existing interests.
 
@@ -16,13 +25,13 @@ In recent times however, questions have started to emerge regarding the merit of
 Media giants like Instagram and Google have openly started acknowledging the problem [[5]](#5)[[6]](#6). For example, in their paper "Degenerate feedback loops in recommender systems", the researhcers at Google's DeepMind found that degenerate feedback loops are <i>intrinsic features</i> of recommendation systems [[6]](#6). The problem, it seems, is therefore rooted in the designs themselves and the challenge is raised to develop more diverse recommendation algorithms for the future.
 
 As frequent users of these systems we, the project members, have noticed this ourselves and feel a great need for change. This experience of ours, along with the visible impacts these things are having in a societal context were our motivation to choose this topic. We set out on a mission to explore diversity in recommendation systems. Which algorithms have the potential to counteract the echo chambers?   
-
+<a name="Projectgoals"></a>
 ## Project Goals
 The topic of diversity in recommendation systems, just like the topic of recommendations sytems itself, is a very extensive one. Though it would be exciting to conquer it all, it was clear from the beginning we would need to narrow down our concentration. After doing some literature review, one of the things we found was that despite many researches agreeing on the importance of diverisification, few agree on the metrics. There seems to be little shared consensus or a trend, making the comparison of resluts from different research groups hard [[7]](#7). With that in mind we defined our mission: 
 - Take part in shaping a better recommendation environment for the future by designing a tool that measures diversity in recommendation algorithms 
 - Contribute to increased algorithmic control of recommendation systems and the emphasis on new metrics
 - Create a library or set of models that evaluates the diversity of the recommendations from prominent algorithms. Give insight on how they compare to accuracy (tradeoff, correlation)
-
+<a name="Methods"></a>
 ## Methods/Tools
 
 - Microsoft Recommenders [[1]](#1)
@@ -30,22 +39,27 @@ The topic of diversity in recommendation systems, just like the topic of recomme
 - Apache Spark
 - Tensorflow
 
+
+<a name="Metrics"></a>
 ## The metrics
 TBD
 
+<a name="Challenges"></a>
 ## Challenges
 Though finding the Microsoft Recommenders gave us a good start, we soon discovered that their diversity metric tools were of a certain format. That certain format was not immediately generalizable to all the algorithms. In their example notebooks the Microsoft Recommenders use a wide variety of approaches, data types and toolkits so as to best represent the uniqueness of each algorithm.
 
 TBD
 
+<a name="Results"></a>
 ## Individual Algorithms and Results
 As a result of some of the challenges stated above, our original dream of creating a unified library was not realistic at this time point. We therefore made a data-processing tool kit and summarize functions that greatly helped in automating the process. 
 
 TBD
-
+<a name="Conclusion"></a>
 ## Conclusion
 TBD
 
+<a name="Setup"></a>
 # Setup
 TBD
 ## Layout of git repo
